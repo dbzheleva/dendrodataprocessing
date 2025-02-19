@@ -23,9 +23,9 @@ from data_plotting import (
 
 
 def main():
-    file1 = '/Users/dragomirazheleva/Desktop/PhD/PhD Projects/Dendrometer/All Dendrometer Data/H1-6 complete-selected/H1_complete.csv'
-    file2 = '/Users/dragomirazheleva/Desktop/PhD/PhD Projects/Dendrometer/All Dendrometer Data/H1-6 complete-selected/H2_complete.csv'
-    file3 = '/Users/dragomirazheleva/Desktop/PhD/PhD Projects/Dendrometer/All Dendrometer Data/H1-6 complete-selected/H3_complete.csv'
+    file1 = 'path to your file'
+    file2 = 'path to your file'
+    file3 = 'path to your file'
 
     # 1) Load data with optional date filtering
     df1, dev1_name = load_and_prepare_data_time_limit(file1, start_date='2023-08-01', end_date='2023-08-15')
