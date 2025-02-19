@@ -18,4 +18,6 @@ Contact:
 - Project Maintainer: Dragomira Zheleva
 - Repository: https://github.com/dbzheleva/dendrodataprocessing
 
+dbzheleva. (2025). dbzheleva/dendrodataprocessing: Dendrometer v1.0.0: Initial Public Release (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.14894926
+
 Feel free to reach out with questions or suggestions for improving the project.
