@@ -17,7 +17,8 @@ from data_plotting import (
     plot_cleaned_displacement,
     plot_original_vs_cleaned,
     plot_displacement_and_vpd,
-    plot_multiple_sensors_displacement
+    plot_multiple_sensors_displacement_cleaned,
+    plot_multiple_sensors_displacement_raw
 )
 
 

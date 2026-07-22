@@ -1,23 +1,99 @@
-This repository contains scripts intended for analysis of data from a non-friction magnetic dendrometer, originally created by the OPEnS Lab. 
+# dendrodataprocessing
 
-This code is under active development and currently focuses on:
-- Data Plotting: Generating graphs to visualize dendrometer measurements over time.
-- Data Cleaning: Addressing common issues such as sensor alignment, noise removal, and simple anomaly detection.
+Processing pipeline for high-frequency dendrometer (stem diameter) records
+from zero-friction magnetic dendrometers developed at the Openly Published
+Environmental Sensing (OPEnS) Lab, Oregon State University
+(https://github.com/OPEnSLab-OSU/Dendrometer).
 
+The code takes raw logger CSVs through outlier cleaning, resampling,
+detrending and z-score standardization, producing series that can be
+compared across sensors and plants.
 
-We plan to add:
-- Gap Filling: Automatically interpolate or handle missing measurement intervals.
-- Advanced Analysis: Provide more robust insights into tree trunk fluctuation.
+---
 
+## Pipeline
 
-License:
-This project is licensed under the MIT License. See LICENSE for details.
-(Or adapt the license information to fit your repository’s needs.)
+| Step | Script | What it does |
+|---|---|---|
+| 1 | `interactive_data_cleaning.py` | Interactive review of each raw file: flags outliers, corrects shifts/jumps/dips, bridges gaps, resamples to 30 min |
+| 2 | `resample_30min.py` | Batch resampling of full-resolution cleaned files to 30-min means |
+| 3 | `detrend_standardize.py` | Removes growth with a 24-h rolling mean, then z-score standardizes the detrended signal |
 
-Contact:
-- Project Maintainer: Dragomira Zheleva
-- Repository: https://github.com/dbzheleva/dendrodataprocessing
+Supporting modules used by the above:
 
-dbzheleva. (2025). dbzheleva/dendrodataprocessing: Dendrometer v1.0.0: Initial Public Release (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.14894926
+| Module | Contents |
+|---|---|
+| `data_loading.py` | File loading, time parsing, date-window subsetting |
+| `data_processing.py` | Outlier detection/correction, resampling, gap handling |
+| `data_plotting.py` | Diagnostic and comparison plots |
+| `main_example.py` | Minimal worked example: load → clean → resample → plot |
 
-Feel free to reach out with questions or suggestions for improving the project.
+---
+
+## Configuring paths
+
+No absolute paths are hard-coded. Point the scripts at your own data in
+either of two ways:
+
+**Environment variable**
+
+```bash
+export DENDRO_DATA_DIR=/path/to/your/data
+python detrend_standardize.py
+```
+
+**Command line** (interactive cleaning only)
+
+```bash
+python interactive_data_cleaning.py /path/to/raw_data cleaned_data
+python interactive_data_cleaning.py /path/to/raw_data cleaned_data \
+       --start-date 2024-08-01 --end-date 2024-10-31
+```
+
+If neither is set, the scripts default to `raw_data/` and `cleaned_data/`
+in the working directory.
+
+`detrend_standardize.py` and `resample_30min.py` also expose a small
+CONFIG block at the top (`TIME_COL`, `SIGNAL_COL`, `FILE_PATTERN`,
+`WINDOW_HOURS`) — set these to match your column names.
+
+---
+
+## Expected input
+
+CSVs with, at minimum:
+
+- a timestamp column (default name `timestamp`)
+- a displacement column (default name `Cleaned Displacement` after step 1)
+
+Sensor and trial names are parsed from the filename, so a consistent
+naming scheme (e.g. `Hazelnut_Trial_2025_CC1_high.csv`) is recommended.
+
+---
+
+## Note on interactive cleaning
+
+`interactive_data_cleaning.py` requires operator judgement at the prompts
+(which flagged points to accept, where to bridge gaps). It documents and
+reproduces the *procedure* used, but rerunning it will not necessarily
+reproduce a previously cleaned file byte-for-byte, since decisions are
+made by the user at run time.
+
+---
+
+## Requirements
+
+Python 3.10 or later, with:
+
+```
+numpy
+pandas
+scipy
+matplotlib
+```
+
+---
+
+## License
+
+See `LICENSE.txt`.
